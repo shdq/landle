@@ -86,36 +86,24 @@ function App() {
   };
 
   function generateOptions(originalNumber: number): number[] {
-    // Function to generate a random offset for similar numbers
+    // Generates a random number between -9 and 9
     function getRandomOffset(): number {
-      // You can adjust the range of the offset based on your requirements
-      return Math.floor(Math.random() * 10) + 1;
-    }
-
-    // Function to shuffle an array using Fisher-Yates algorithm
-    function shuffleArray(array: any[]): void {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
+      return Math.floor(Math.random() * 19) - 9;
     }
 
     const optionsSet: Set<number> = new Set();
 
-    // Add the original number to the set
     optionsSet.add(originalNumber);
 
-    // Generate similar numbers until the set has 4 unique numbers
     while (optionsSet.size < 4) {
-      const similarNumber = originalNumber + getRandomOffset();
-      // Ensure the similar number does not exceed 99
-      const boundedSimilarNumber = Math.min(similarNumber, 99);
-      optionsSet.add(boundedSimilarNumber);
+      const offset = getRandomOffset();
+      // Ensure the similar number stays between 1 and 99
+      const similarNumber = Math.min(Math.max(originalNumber + offset, 1), 99);
+      optionsSet.add(similarNumber);
     }
 
     // Convert the set to an array and shuffle it
-    const options: number[] = Array.from(optionsSet);
-    shuffleArray(options);
+    const options = Array.from(optionsSet).sort(() => Math.random() - 0.5);
 
     return options;
   }
