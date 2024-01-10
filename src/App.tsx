@@ -34,13 +34,11 @@ function App() {
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
-      // Save record to local storage whenever it changes
       localStorage.setItem("record-es", record.toString());
     }
   }, [record]);
 
-  const audioSource = `/audio/${number}_es.mp3`;
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(new Audio());
 
   const playAudio = (speed: number = 1) => {
     if (audioRef.current) {
@@ -55,8 +53,8 @@ function App() {
     }
   };
 
-  // Play when the number is changing
   useEffect(() => {
+    audioRef.current.src = `/audio/${number}_es.mp3`;
     playAudio();
   }, [number]);
 
@@ -191,7 +189,7 @@ function App() {
               Start
             </Button>
           )}
-          <audio ref={audioRef} src={audioSource} preload="auto" />
+          <audio ref={audioRef} />
         </CardBody>
         <CardFooter css={{}}>{isStarted && optionsButtons}</CardFooter>
       </Card>
