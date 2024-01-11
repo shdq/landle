@@ -20,7 +20,14 @@ import "./App.css";
 const getRandomNumber = () => Math.floor(Math.random() * 99) + 1;
 
 function App() {
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      // Load record from local storage or default to 0
+      return parseInt(localStorage.getItem("score-es") || "0", 10);
+    } else {
+      return 0;
+    }
+  });
   const [record, setRecord] = useState(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       // Load record from local storage or default to 0
@@ -31,6 +38,12 @@ function App() {
   });
   const [number, setNumber] = useState(getRandomNumber());
   const [isStarted, setIsStarted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      localStorage.setItem("score-es", score.toString());
+    }
+  }, [score]);
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -119,21 +132,17 @@ function App() {
               What's your longest streak?
             </Text>
           </Heading>
-          {isStarted && (
-            <>
-              <br />
-              <Text size="lg">
-                Points{" "}
-                <Badge size="lg" color="blue">
-                  {score}
-                </Badge>{" "}
-                Record{" "}
-                <Badge size="lg" color="red">
-                  {record}
-                </Badge>
-              </Text>
-            </>
-          )}
+          <br />
+          <Text size="lg">
+            Points{" "}
+            <Badge size="lg" color="blue">
+              {score}
+            </Badge>{" "}
+            Record{" "}
+            <Badge size="lg" color="red">
+              {record}
+            </Badge>
+          </Text>
         </CardHeader>
         <CardBody
           css={{
@@ -174,7 +183,7 @@ function App() {
               size="lg"
               icon={<IconPlayerPlayFilled size={24} />}
             >
-              Start
+              {score === 0 ? "Start" : "Continue"}
             </Button>
           )}
           <audio ref={audioRef} />
