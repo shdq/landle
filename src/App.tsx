@@ -16,8 +16,7 @@ import {
   CardFooter,
 } from "spartak-ui";
 import "./App.css";
-
-const getRandomNumber = () => Math.floor(Math.random() * 99) + 1;
+import { getNextUniqueRandomNumber } from "./utils/functions";
 
 function App() {
   const [score, setScore] = useState(() => {
@@ -36,7 +35,7 @@ function App() {
       return 0;
     }
   });
-  const [number, setNumber] = useState(getRandomNumber());
+  const [number, setNumber] = useState(getNextUniqueRandomNumber());
   const [isStarted, setIsStarted] = useState(false);
 
   useEffect(() => {
@@ -95,7 +94,7 @@ function App() {
         return 0;
       }
     });
-    setNumber(getRandomNumber());
+    setNumber((prev) => getNextUniqueRandomNumber(prev));
   };
 
   function generateOptions(originalNumber: number): number[] {
