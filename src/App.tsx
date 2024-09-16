@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   IconRepeat,
   IconPlayerPlayFilled,
@@ -50,24 +50,29 @@ function App() {
     }
   }, [record]);
 
-  const audioRef = useRef<HTMLAudioElement>(new Audio());
+  const speakNumber = (number: number, speed: number = 1) => {
+    // Check if window and speechSynthesis are available
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      const synth = window.speechSynthesis;
 
-  const playAudio = (speed: number = 1) => {
-    if (audioRef.current) {
-      // Check if the audio is paused or has ended before playing
-      if (audioRef.current.paused || audioRef.current.ended) {
-        // Update the playback speed
-        audioRef.current.playbackRate = speed;
+      // Create a new utterance instance
+      const utterance = new SpeechSynthesisUtterance(number.toString());
 
-        // Play the audio
-        audioRef.current.play();
-      }
+      // Set language and playback speed
+      utterance.lang = "es-ES"; // Spanish language
+      utterance.rate = speed; // Speed (1 is default)
+
+      // Speak the number
+      synth.speak(utterance);
+    } else {
+      console.warn("Speech synthesis not supported in this environment.");
     }
   };
 
   useEffect(() => {
-    audioRef.current.src = `/audio/${number}_es.mp3`;
-    playAudio();
+    if (isStarted) {
+      speakNumber(number);
+    }
   }, [number]);
 
   const optionsButtons = generateOptions(number).map((num) => {
@@ -131,7 +136,7 @@ function App() {
             <>
               <Button
                 css={{ marginRight: "5px" }}
-                onClick={() => playAudio()}
+                onClick={() => speakNumber(number)}
                 variant="text"
                 color="blue"
                 size="lg"
@@ -140,7 +145,7 @@ function App() {
                 Repeat
               </Button>
               <Button
-                onClick={() => playAudio(0.6)}
+                onClick={() => speakNumber(number, 0.6)}
                 variant="text"
                 color="blue"
                 size="lg"
@@ -153,7 +158,7 @@ function App() {
             <Button
               onClick={() => {
                 setIsStarted(true);
-                playAudio();
+                speakNumber(number);
               }}
               color="blue"
               size="lg"
@@ -162,7 +167,6 @@ function App() {
               {score === 0 ? "Start" : "Continue"}
             </Button>
           )}
-          <audio ref={audioRef} />
         </CardBody>
         <CardFooter css={{}}>{isStarted && optionsButtons}</CardFooter>
       </Card>
