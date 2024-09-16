@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   IconRepeat,
   IconPlayerPlayFilled,
@@ -16,7 +16,7 @@ import {
   CardFooter,
 } from "spartak-ui";
 import "./App.css";
-import { getNextUniqueRandomNumber } from "./utils/functions";
+import { getNextUniqueRandomNumber, generateOptions } from "./utils/functions";
 
 function App() {
   const [score, setScore] = useState(() => {
@@ -50,24 +50,29 @@ function App() {
     }
   }, [record]);
 
-  const audioRef = useRef<HTMLAudioElement>(new Audio());
+  const speakNumber = (number: number, speed: number = 1) => {
+    // Check if window and speechSynthesis are available
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      const synth = window.speechSynthesis;
 
-  const playAudio = (speed: number = 1) => {
-    if (audioRef.current) {
-      // Check if the audio is paused or has ended before playing
-      if (audioRef.current.paused || audioRef.current.ended) {
-        // Update the playback speed
-        audioRef.current.playbackRate = speed;
+      // Create a new utterance instance
+      const utterance = new SpeechSynthesisUtterance(number.toString());
 
-        // Play the audio
-        audioRef.current.play();
-      }
+      // Set language and playback speed
+      utterance.lang = "es-ES"; // Spanish language
+      utterance.rate = speed; // Speed (1 is default)
+
+      // Speak the number
+      synth.speak(utterance);
+    } else {
+      console.warn("Speech synthesis not supported in this environment.");
     }
   };
 
   useEffect(() => {
-    audioRef.current.src = `/audio/${number}_es.mp3`;
-    playAudio();
+    if (isStarted) {
+      speakNumber(number);
+    }
   }, [number]);
 
   const optionsButtons = generateOptions(number).map((num) => {
@@ -96,29 +101,6 @@ function App() {
     });
     setNumber((prev) => getNextUniqueRandomNumber(prev));
   };
-
-  function generateOptions(originalNumber: number): number[] {
-    // Generates a random number between -9 and 9
-    function getRandomOffset(): number {
-      return Math.floor(Math.random() * 19) - 9;
-    }
-
-    const optionsSet: Set<number> = new Set();
-
-    optionsSet.add(originalNumber);
-
-    while (optionsSet.size < 4) {
-      const offset = getRandomOffset();
-      // Ensure the similar number stays between 1 and 99
-      const similarNumber = Math.min(Math.max(originalNumber + offset, 1), 99);
-      optionsSet.add(similarNumber);
-    }
-
-    // Convert the set to an array and shuffle it
-    const options = Array.from(optionsSet).sort(() => Math.random() - 0.5);
-
-    return options;
-  }
 
   return (
     <>
@@ -154,7 +136,7 @@ function App() {
             <>
               <Button
                 css={{ marginRight: "5px" }}
-                onClick={() => playAudio()}
+                onClick={() => speakNumber(number)}
                 variant="text"
                 color="blue"
                 size="lg"
@@ -163,7 +145,7 @@ function App() {
                 Repeat
               </Button>
               <Button
-                onClick={() => playAudio(0.6)}
+                onClick={() => speakNumber(number, 0.6)}
                 variant="text"
                 color="blue"
                 size="lg"
@@ -176,7 +158,7 @@ function App() {
             <Button
               onClick={() => {
                 setIsStarted(true);
-                playAudio();
+                speakNumber(number);
               }}
               color="blue"
               size="lg"
@@ -185,7 +167,6 @@ function App() {
               {score === 0 ? "Start" : "Continue"}
             </Button>
           )}
-          <audio ref={audioRef} />
         </CardBody>
         <CardFooter css={{}}>{isStarted && optionsButtons}</CardFooter>
       </Card>
