@@ -7,7 +7,10 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      injectRegister: null, // Disable service worker registration
+      // Prevents web app manifest and 401 status code (Unauthorized)
+      useCredentials: true,
+      // Disable service worker registration
+      injectRegister: null, 
       manifest: {
         name: "Number Streak – listen and learn numbers in foreign languages",
         short_name: "Listen Numbers",
