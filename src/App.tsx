@@ -14,18 +14,19 @@ import {
   CardHeader,
   CardBody,
   CardFooter,
+  Select,
 } from "spartak-ui";
 import "./App.css";
 import { getNextUniqueRandomNumber, generateOptions } from "./utils/functions";
 
 const DEFAULT_LANG = "en";
 enum LANGUAGES {
-  de = "German",
-  es = "Spanish",
-  en = "English",
-  fr = "French",
-  it = "Italian",
-  ru = "Russian",
+  de = "🇩🇪 German",
+  es = "🇪🇸 Spanish",
+  en = "🇬🇧 English",
+  fr = "🇫🇷 French",
+  it = "🇮🇹 Italian",
+  ru = "🇷🇺 Russian",
 }
 
 function App() {
@@ -118,14 +119,7 @@ function App() {
 
   const selectOptions = Object.entries(LANGUAGES).map(
     ([langCode, langName]) => {
-      return (
-        <option
-          key={langCode}
-          value={langCode}
-        >
-          {langName}
-        </option>
-      );
+      return { value: langCode, label: langName, key: langCode };
     }
   );
 
@@ -168,23 +162,30 @@ function App() {
           <Heading as="h1" size="xl">
             Numstr{" "}
             <Text size="lg" secondary>
-              What's your longest streak?
+              Listen and learn numbers
             </Text>
           </Heading>
           <br />
-          <Text size="lg">
-            I'm learning numbers in{" "}
-            <select
+          <Card
+            css={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text size="lg">I'm studying</Text>
+            <Select
+              css={{ minWidth: "140px" }}
+              size="md"
               name="languages"
-              id="lang-select"
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                 handleSelectChange(e);
               }}
               value={currLang}
-            >
-              {selectOptions}
-            </select>
-          </Text>
+              options={selectOptions}
+            />
+          </Card>
           <br />
           <Text size="lg">
             Points{" "}
