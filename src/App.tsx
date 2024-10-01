@@ -3,6 +3,9 @@ import {
   IconRepeat,
   IconPlayerPlayFilled,
   IconClock,
+  IconHome,
+  IconSettings,
+  IconBook,
 } from "@tabler/icons-react";
 import { Switch } from "./components/Switch";
 import {
@@ -17,6 +20,7 @@ import {
   Select,
 } from "spartak-ui";
 import "./App.css";
+import FixedMenu from "./components/FixedMenu";
 import { getNextUniqueRandomNumber, generateOptions } from "./utils/functions";
 
 const DEFAULT_LANG = "en";
@@ -163,9 +167,28 @@ function App() {
 
   return (
     <>
-      <Card css={{ height: "100%", textAlign: "center" }}>
+      <FixedMenu position="top">
+        <Switch />
+        <Select
+          css={{ minWidth: "140px" }}
+          size="md"
+          name="languages"
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            handleSelectChange(e);
+          }}
+          value={currLang}
+          options={selectOptions}
+        />
+      </FixedMenu>
+      <Card
+        css={{
+          height: "100%",
+          textAlign: "center",
+          paddingTop: "97px",
+          paddingBottom: "97px",
+        }}
+      >
         <CardHeader>
-          <Switch />
           <Heading as="h1" size="xl">
             Numstr{" "}
             <Text size="lg" secondary>
@@ -173,26 +196,6 @@ function App() {
             </Text>
           </Heading>
           <br />
-          <Card
-            css={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text size="lg">I'm studying</Text>
-            <Select
-              css={{ minWidth: "140px" }}
-              size="md"
-              name="languages"
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                handleSelectChange(e);
-              }}
-              value={currLang}
-              options={selectOptions}
-            />
-          </Card>
           <br />
           <Text size="lg">
             Points{" "}
@@ -260,6 +263,28 @@ function App() {
           {isStarted && optionsButtons}
         </CardFooter>
       </Card>
+      <FixedMenu position="bottom">
+        <Button
+          variant="tinted"
+          color="blue"
+          size="md"
+          icon={<IconHome size={24} />}
+        ></Button>
+        <Button
+          disabled
+          variant="text"
+          color="blue"
+          size="md"
+          icon={<IconBook size={24} />}
+        ></Button>
+        <Button
+          disabled
+          variant="text"
+          color="blue"
+          size="md"
+          icon={<IconSettings size={24} />}
+        ></Button>
+      </FixedMenu>
     </>
   );
 }
