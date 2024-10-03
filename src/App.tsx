@@ -129,15 +129,22 @@ function App() {
 
   const optionsButtons = generateOptions(number).map((num) => {
     return (
-      <Button
+      <div
         key={num.toString()}
-        size="lg"
-        color="blue"
-        css={{ width: "100%", margin: "3px" }}
-        onClick={() => handleButtonClick(num)}
+        style={{
+          flex: "1 1 45%",
+          maxWidth: "45%",
+        }}
       >
-        {num}
-      </Button>
+        <Button
+          size="lg"
+          color="blue"
+          css={{ width: "100%", margin: "3px" }}
+          onClick={() => handleButtonClick(num)}
+        >
+          {num}
+        </Button>
+      </div>
     );
   });
 
@@ -241,7 +248,17 @@ function App() {
             </Button>
           )}
         </CardBody>
-        <CardFooter css={{}}>{isStarted && optionsButtons}</CardFooter>
+        <CardFooter
+          css={{
+            display: "flex",
+            flexWrap: "wrap",
+            rowGap: "5px",
+            columnGap: "10px",
+            justifyContent: "center",
+          }}
+        >
+          {isStarted && optionsButtons}
+        </CardFooter>
       </Card>
     </>
   );
