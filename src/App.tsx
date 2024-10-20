@@ -21,7 +21,12 @@ import {
 } from "spartak-ui";
 import "./App.css";
 import FixedMenu from "./components/FixedMenu";
-import { getNextUniqueRandomNumber, generateOptions } from "./utils/functions";
+import Logo from "./components/Logo";
+import {
+  getNextUniqueRandomNumber,
+  generateOptions,
+  speakNumber,
+} from "./utils/functions";
 
 const DEFAULT_LANG = "en";
 enum LANGUAGES {
@@ -96,28 +101,9 @@ function App() {
     }
   }, [currLang]);
 
-  const speakNumber = (number: number, speed: number = 1) => {
-    // Check if window and speechSynthesis are available
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      const synth = window.speechSynthesis;
-
-      // Create a new utterance instance
-      const utterance = new SpeechSynthesisUtterance(number.toString());
-
-      // Set language and playback speed
-      utterance.lang = `${currLang.toLowerCase()}-${currLang}`;
-      utterance.rate = speed; // Speed (1 is default)
-
-      // Speak the number
-      synth.speak(utterance);
-    } else {
-      console.warn("Speech synthesis not supported in this environment.");
-    }
-  };
-
   useEffect(() => {
     if (isStarted) {
-      speakNumber(number);
+      speakNumber(number, currLang);
     }
   }, [number]);
 
@@ -143,7 +129,7 @@ function App() {
         <Button
           size="lg"
           color="blue"
-          css={{ width: "100%", margin: "3px" }}
+          css={{ width: "100%" }}
           onClick={() => handleButtonClick(num)}
         >
           {num}
@@ -168,6 +154,7 @@ function App() {
   return (
     <>
       <FixedMenu position="top">
+        <Logo />
         <Switch />
         <Select
           css={{ minWidth: "140px" }}
@@ -189,10 +176,10 @@ function App() {
         }}
       >
         <CardHeader>
-          <Heading as="h1" size="xl">
-            Numstr{" "}
+          <Heading as="h1" size="xxl" className="logo-font">
+            Landle{" "}
             <Text size="lg" secondary>
-              Listen and learn numbers
+              Listen and learn
             </Text>
           </Heading>
           <br />
@@ -219,7 +206,7 @@ function App() {
             <>
               <Button
                 css={{ marginRight: "5px" }}
-                onClick={() => speakNumber(number)}
+                onClick={() => speakNumber(number, currLang)}
                 variant="text"
                 color="blue"
                 size="lg"
@@ -228,7 +215,7 @@ function App() {
                 Repeat
               </Button>
               <Button
-                onClick={() => speakNumber(number, 0.6)}
+                onClick={() => speakNumber(number, currLang, 0.1)}
                 variant="text"
                 color="blue"
                 size="lg"
@@ -241,7 +228,7 @@ function App() {
             <Button
               onClick={() => {
                 setIsStarted(true);
-                speakNumber(number);
+                speakNumber(number, currLang);
               }}
               color="blue"
               size="lg"
@@ -255,8 +242,7 @@ function App() {
           css={{
             display: "flex",
             flexWrap: "wrap",
-            rowGap: "5px",
-            columnGap: "10px",
+            gap: "10px",
             justifyContent: "center",
           }}
         >
