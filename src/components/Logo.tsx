@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
+
 // Font: Galada cursive
 const Logo = () => {
   return (
-    <a href="/">
+    <Link to="/">
       <div
         style={{
           color: "var(--colors-blue600)",
@@ -24,7 +26,7 @@ const Logo = () => {
           ></path>
         </svg>
       </div>
-    </a>
+    </Link>
   );
 };
 

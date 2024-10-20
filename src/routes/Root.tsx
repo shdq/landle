@@ -7,7 +7,6 @@ import {
   IconSettings,
   IconBook,
 } from "@tabler/icons-react";
-import { Switch } from "./components/Switch";
 import {
   Heading,
   Text,
@@ -19,14 +18,15 @@ import {
   CardFooter,
   Select,
 } from "spartak-ui";
-import "./App.css";
-import FixedMenu from "./components/FixedMenu";
-import Logo from "./components/Logo";
+import "./Root.css";
+import FixedMenu from "../components/FixedMenu";
+import Logo from "../components/Logo";
 import {
   getNextUniqueRandomNumber,
   generateOptions,
   speakNumber,
-} from "./utils/functions";
+} from "../utils/functions";
+import { Link, useMatch } from "react-router-dom";
 
 const DEFAULT_LANG = "en";
 enum LANGUAGES {
@@ -38,7 +38,7 @@ enum LANGUAGES {
   ru = "🇷🇺 Russian",
 }
 
-function App() {
+function Root() {
   const [currLang, setCurrLang] =
     useState<keyof typeof LANGUAGES>(DEFAULT_LANG);
   const [score, setScore] = useState(0);
@@ -151,11 +151,12 @@ function App() {
     setNumber((prev) => getNextUniqueRandomNumber(prev));
   };
 
+  const match = useMatch("/");
+
   return (
     <>
       <FixedMenu position="top">
         <Logo />
-        <Switch />
         <Select
           css={{ minWidth: "140px" }}
           size="md"
@@ -251,11 +252,13 @@ function App() {
       </Card>
       <FixedMenu position="bottom">
         <Button
-          variant="tinted"
+          variant={match?.pathname === "/" ? "tinted" : "text"}
           color="blue"
           size="md"
           icon={<IconHome size={24} />}
-        ></Button>
+          as={Link}
+          to={`/`}
+        />
         <Button
           disabled
           variant="text"
@@ -264,15 +267,16 @@ function App() {
           icon={<IconBook size={24} />}
         ></Button>
         <Button
-          disabled
-          variant="text"
+          variant={match?.pathname === "/settings" ? "tinted" : "text"}
           color="blue"
           size="md"
+          to="/settings"
           icon={<IconSettings size={24} />}
-        ></Button>
+          as={Link}
+        />
       </FixedMenu>
     </>
   );
 }
 
-export default App;
+export default Root;
