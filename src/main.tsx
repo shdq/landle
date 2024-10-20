@@ -2,7 +2,11 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { ThemeProvider } from "spartak-ui";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 
 import Root from "./routes/Root";
 import Main from "./routes/Main";
@@ -12,6 +16,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
+    errorElement: <Navigate to="/" />,
     children: [
       {
         path: "/",
