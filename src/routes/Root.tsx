@@ -4,7 +4,7 @@ import { Button, Select } from "spartak-ui";
 import "./Root.css";
 import FixedMenu from "../components/FixedMenu";
 import Logo from "../components/Logo";
-import { Link, Outlet, useOutletContext, useMatch } from "react-router-dom";
+import { Link, Outlet, useOutletContext, useMatches } from "react-router-dom";
 
 const DEFAULT_LANG = "en";
 enum LANGUAGES {
@@ -50,7 +50,8 @@ function Root() {
     setCurrLang(e.target.value as keyof typeof LANGUAGES);
   };
 
-  const match = useMatch("/");
+  const matches = useMatches();
+  const currentPath = matches[matches.length - 1]?.pathname;
 
   return (
     <>
@@ -70,12 +71,12 @@ function Root() {
       <Outlet context={currLang satisfies keyof typeof LANGUAGES} />
       <FixedMenu position="bottom">
         <Button
-          variant={match?.pathname === "/" ? "tinted" : "text"}
+          as={Link}
+          to={`/`}
+          variant={currentPath === "/" ? "tinted" : "text"}
           color="blue"
           size="md"
           icon={<IconHome size={24} />}
-          as={Link}
-          to={`/`}
         />
         <Button
           disabled
@@ -85,12 +86,12 @@ function Root() {
           icon={<IconBook size={24} />}
         ></Button>
         <Button
-          variant={match?.pathname === "/settings" ? "tinted" : "text"}
+          as={Link}
+          to="/settings"
+          variant={currentPath === "/settings" ? "tinted" : "text"}
           color="blue"
           size="md"
-          to="/settings"
           icon={<IconSettings size={24} />}
-          as={Link}
         />
       </FixedMenu>
     </>

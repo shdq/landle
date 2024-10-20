@@ -127,7 +127,7 @@ function Main() {
       }}
     >
       <CardHeader>
-        <Heading as="h1" size="xxl" className="logo-font">
+        <Heading as="h1" size="xxl">
           Landle{" "}
           <Text size="lg" secondary>
             Listen and learn

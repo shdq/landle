@@ -12,7 +12,7 @@ function Settings() {
       }}
     >
       <CardHeader>
-        <Heading as="h1" size="xxl" className="logo-font">
+        <Heading as="h2" size="xl">
           Settings
         </Heading>
       </CardHeader>
