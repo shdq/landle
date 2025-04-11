@@ -30,26 +30,60 @@ export function generateOptions(originalNumber: number): number[] {
   return options;
 }
 
+type VoicePreferences = {
+  [lang: string]: string[];
+};
+const preferredVoices: VoicePreferences = {
+  en: ["Samantha"],
+  es: ["Paulina"],
+  ru: ["Milena"],
+  fr: ["Amélie"],
+  de: ["Anna"],
+  it: ["Alice"],
+};
+
+function getPreferredVoice(lang: string): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis.getVoices();
+
+  // Try finding by preferred voice names
+  const preferences = preferredVoices[lang.toLowerCase()];
+  if (preferences) {
+    for (const preferredName of preferences) {
+      const found = voices.find((v) => v.name === preferredName);
+      if (found) return found;
+    }
+  }
+
+  // Fallback: Match by language code
+  return voices.find((voice) =>
+    voice.lang.toLowerCase().startsWith(lang.toLowerCase())
+  ) || null;
+}
+
 export function speakNumber(
   number: number,
   language: string,
   speed: number = 0.8
 ) {
-  // Check if window and speechSynthesis are available
   if (typeof window !== "undefined" && window.speechSynthesis) {
     const synth = window.speechSynthesis;
 
     // Cancel any ongoing speech before starting a new one
     synth.cancel();
 
-    // Create a new utterance instance
     const utterance = new SpeechSynthesisUtterance(number.toString());
 
-    // Set language and playback speed
-    utterance.lang = `${language.toLowerCase()}-${language}`;
-    utterance.rate = speed; // Speed (1 is default)
+    // Pick a specific voice
+    const voice = getPreferredVoice(language);
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang; // use actual voice language
+    } else {
+      utterance.lang = `${language.toLowerCase()}-${language}`; // fallback
+    }
 
-    // Speak the number
+    utterance.rate = speed;
+
     synth.speak(utterance);
   } else {
     console.warn("Speech synthesis not supported in this environment.");
