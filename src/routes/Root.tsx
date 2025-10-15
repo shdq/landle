@@ -79,8 +79,9 @@ function Root() {
           icon={<IconHome size={24} />}
         />
         <Button
-          disabled
-          variant="text"
+          as={Link}
+          to="/learn"
+          variant={currentPath === "/learn" ? "tinted" : "text"}
           color="blue"
           size="md"
           icon={<IconBook size={24} />}

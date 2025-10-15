@@ -10,6 +10,7 @@ import {
 
 import Root from "./routes/Root";
 import Main from "./routes/Main";
+import Learn from "./routes/Learn";
 import Settings from "./routes/Settings";
 
 const router = createBrowserRouter([
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Main />,
+      },
+      {
+        path: "learn",
+        element: <Learn />,
       },
       {
         path: "settings",
